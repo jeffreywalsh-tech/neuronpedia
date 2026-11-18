@@ -92,10 +92,7 @@ class NPRequest:
         **kwargs,
     ):
         """Send an HTTP request."""
-        headers = kwargs.get(
-            "headers",
-            {},
-        )
+        headers = dict(kwargs.pop("headers", None) or {})
         headers["X-Api-Key"] = self.api_key
         headers["Accept-Encoding"] = "gzip"
         url = f"{self.BASE_URL}/{self.endpoint}/{uri}"
