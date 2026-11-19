@@ -126,8 +126,13 @@ class NPRequest:
                 "You've exceeded the API rate limit. Try later or email support@neuronpedia.org to raise your limit."
             )
         elif 400 <= response.status_code < 500:
+            try:
+                error_details = response.json()
+            except requests.exceptions.JSONDecodeError:
+                error_details = response.text[:1024]
             raise requests.exceptions.HTTPError(
-                f"Request failed with status {response.status_code}: {response.json()}"
+                f"Request failed with status {response.status_code}: {error_details}",
+                response=response,
             )
         elif 500 <= response.status_code < 600:
             raise requests.exceptions.HTTPError(
